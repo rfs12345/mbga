@@ -23,6 +23,7 @@ function ThreeOptionHeader() {
   const setCategories = useAppStore((state) => state.setCategories);
   const setSelectedMonth = useAppStore((state) => state.setSelectedMonth);
   const setSelectedYear = useAppStore((state) => state.setSelectedYear);
+  const selectedYear = useAppStore((state) => state.selectedYear);
   const files = useAppStore((state) => state.files);
   const navigate = useNavigate();
   const actualSelectedFile = useAppStore((state) => state.actualSelectedFile);
@@ -129,7 +130,7 @@ function ThreeOptionHeader() {
             aria-expanded="false"
             style={{ background: "#d5dc76", margin: "3px" }}
           >
-            Edit Selected Year
+            {selectedYear}
           </button>
           <ul className="dropdown-menu">
             {years.map((year, index) => (
