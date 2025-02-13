@@ -1,0 +1,14 @@
+#budgeted_item_amount {
+  margin-left: 10px;
+  float: right;
+}
+
+#budgeted_item_options {
+  margin-left: 10px;
+  float: right;
+}
+.list-group-item {
+  margin-left: 10px;
+  margin-right: 10px;
+  width: 75%;
+}
