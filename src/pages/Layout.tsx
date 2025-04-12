@@ -48,8 +48,8 @@ const Layout: React.FC<{ children: React.ReactNode }> = ({ children }) => {
               </Link>
             </li>
             <li>
-              <Link to="/remaining" className="nav-link link-light">
-                Remaining
+              <Link to="/trends" className="nav-link link-light">
+                Trends
               </Link>
             </li>
           </ul>

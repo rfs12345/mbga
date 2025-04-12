@@ -69,7 +69,7 @@ const HomePage = () => {
     ).then(() => {
       setTimeout(() => {
         handleFileUploaded();
-      }, 20);
+      }, 100);
     });
   };
 

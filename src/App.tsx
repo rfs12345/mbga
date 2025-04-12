@@ -2,12 +2,11 @@ import { Category } from "./entities/Category";
 import { HashRouter, Route, Routes } from "react-router";
 import HomePage from "./pages/HomePage";
 import { create } from "zustand";
-import MainPage from "./pages/MainPage";
 import ExpensePage from "./pages/ExpensePage";
-import Main from "electron/main";
 import Layout from "./pages/Layout";
 import { BudgetPage } from "./pages/BudgetPage";
 import SpentPage from "./pages/SpentPage";
+import TrendsPage from "./pages/TrendsPage";
 
 interface AppState {
   categories: Category[];
@@ -116,6 +115,14 @@ function App() {
             element={
               <Layout>
                 <SpentPage />
+              </Layout>
+            }
+          />
+          <Route
+            path="/trends"
+            element={
+              <Layout>
+                <TrendsPage />
               </Layout>
             }
           />
