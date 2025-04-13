@@ -2,8 +2,7 @@ import CategorySection from "../page_components/CategorySection";
 import { useAppStore } from "../App";
 import { budgetItem } from "../entities/budgetItem";
 import { Category } from "../entities/Category";
-import List from "../page_components/List";
-import SectionHeader from "../page_organization/SectionHeaders";
+
 import { useEffect, useState } from "react";
 import { getIncomeItemIntoCorrectPosition } from "../service/parseJson";
 
@@ -15,24 +14,37 @@ export const BudgetPage = () => {
   
   // Add effect to handle month changes
   useEffect(() => {
-    // Reset categories when month changes
+    // Only reset if we have categories and they need to be reset
     if (categories.length > 0) {
-      const resetCategories = categories.map(category => ({
-        ...category,
-        associatedBudgetItems: category.associatedBudgetItems.map(item => ({
-          ...item,
-          amountBudgeted: 0,
-          amountSpent: 0,
-          expenses: []
-        }))
-      }));
-      setCategories(resetCategories);
+      const hasNonZeroValues = categories.some(category => 
+        category.associatedBudgetItems.some(item => 
+          item.amountBudgeted !== 0 || item.amountSpent !== 0 || item.expenses.length > 0
+        )
+      );
+
+      if (!hasNonZeroValues) {
+        const resetCategories = categories.map(category => ({
+          ...category,
+          associatedBudgetItems: category.associatedBudgetItems.map(item => ({
+            ...item,
+            amountBudgeted: 0,
+            amountSpent: 0,
+            expenses: []
+          }))
+        }));
+        setCategories(resetCategories);
+      }
     }
   }, [selectedMonth]);
 
+  // Update totals whenever categories change
+  useEffect(() => {
+    handleTotalIncomeAllocatedProcess();
+    handleTotalIncomeBudgetedProcess();
+  }, [categories]);
+
   const handleTotalIncomeAllocatedProcess = () => {
     setTotalIncomeAllocated(handleTotalIncomeAllocated());
-    console.log(totalIncomeAllocated);
   };
 
   const [newCategoryName, setNewCategoryName] = useState("");
@@ -43,6 +55,7 @@ export const BudgetPage = () => {
     amountSpent: 0,
     expenses: [],
   };
+
   const handleTotalIncomeAllocated = () => {
     let totalIncomeAllocated = 0;
     for (let y of categories) {
@@ -52,13 +65,13 @@ export const BudgetPage = () => {
         }
       }
     }
-    //console.log(categories);
     return totalIncomeAllocated;
   };
 
   const [totalIncomeAllocated, setTotalIncomeAllocated] = useState<number>(
     handleTotalIncomeAllocated
   );
+
   const addListItem = (catName: string) => {
     if (categories !== undefined) {
       const categoryIndex = categories.findIndex((x) => x.name === catName);
@@ -79,6 +92,7 @@ export const BudgetPage = () => {
       }
     }
   };
+
   const handleTotalIncomeBudgeted = () => {
     let incomeValuee = 0;
     console.log("Herte");
@@ -93,6 +107,7 @@ export const BudgetPage = () => {
     console.log(incomeValuee);
     return incomeValuee;
   };
+
   const handleTotalIncomeBudgetedProcess = () => {
     setIncomeValue(handleTotalIncomeBudgeted());
   };
@@ -100,6 +115,7 @@ export const BudgetPage = () => {
   const [incomeValue, setIncomeValue] = useState<number>(
     handleTotalIncomeBudgeted
   );
+
   function handleAddCategory() {
     const newCategory: Category = {
       name: newCategoryName,
@@ -119,10 +135,6 @@ export const BudgetPage = () => {
     setNewCategoryName("");
   }
 
-  useEffect(() => {
-    handleTotalIncomeAllocatedProcess();
-    handleTotalIncomeBudgetedProcess();
-  }, [categories]);
   return (
     <main style={{ flex: 1, padding: "1rem", background: "#efefec" }}>
       {getIncomeItemIntoCorrectPosition(categories)?.map((category, index) => (
