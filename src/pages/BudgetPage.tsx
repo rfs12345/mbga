@@ -10,7 +10,26 @@ import { getIncomeItemIntoCorrectPosition } from "../service/parseJson";
 export const BudgetPage = () => {
   const categories = useAppStore((state) => state.categories);
   const setCategories = useAppStore((state) => state.setCategories);
+  const selectedMonth = useAppStore((state) => state.selectedMonth);
   const [addCategoryClicked, setAddCategoryClicked] = useState(false);
+  
+  // Add effect to handle month changes
+  useEffect(() => {
+    // Reset categories when month changes
+    if (categories.length > 0) {
+      const resetCategories = categories.map(category => ({
+        ...category,
+        associatedBudgetItems: category.associatedBudgetItems.map(item => ({
+          ...item,
+          amountBudgeted: 0,
+          amountSpent: 0,
+          expenses: []
+        }))
+      }));
+      setCategories(resetCategories);
+    }
+  }, [selectedMonth]);
+
   const handleTotalIncomeAllocatedProcess = () => {
     setTotalIncomeAllocated(handleTotalIncomeAllocated());
     console.log(totalIncomeAllocated);
@@ -42,21 +61,21 @@ export const BudgetPage = () => {
   );
   const addListItem = (catName: string) => {
     if (categories !== undefined) {
-      console.log(categories);
-      const newlyFormedCategory = categories.find((x) =>
-        x.name === catName ? x.associatedBudgetItems.push(test) : null
-      );
-      let categoryIndex = categories.findIndex((x) => {
-        return x.name === catName;
-      });
-      console.log(categoryIndex);
-      const removingCurrentCategory = categories.filter(
-        (ele) => ele.name !== catName
-      );
-      if (newlyFormedCategory !== undefined) {
-        console.log(removingCurrentCategory);
-        removingCurrentCategory.splice(categoryIndex, 0, newlyFormedCategory);
-        setCategories(removingCurrentCategory);
+      const categoryIndex = categories.findIndex((x) => x.name === catName);
+      if (categoryIndex !== -1) {
+        const updatedCategories = categories.map((category, index) => {
+          if (index === categoryIndex) {
+            return {
+              ...category,
+              associatedBudgetItems: [
+                ...category.associatedBudgetItems,
+                { ...test }
+              ]
+            };
+          }
+          return category;
+        });
+        setCategories(updatedCategories);
       }
     }
   };
