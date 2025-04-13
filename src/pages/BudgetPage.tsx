@@ -12,9 +12,7 @@ export const BudgetPage = () => {
   const selectedMonth = useAppStore((state) => state.selectedMonth);
   const [addCategoryClicked, setAddCategoryClicked] = useState(false);
   
-  // Add effect to handle month changes
   useEffect(() => {
-    // Only reset if we have categories and they need to be reset
     if (categories.length > 0) {
       const hasNonZeroValues = categories.some(category => 
         category.associatedBudgetItems.some(item => 
@@ -37,7 +35,6 @@ export const BudgetPage = () => {
     }
   }, [selectedMonth]);
 
-  // Update totals whenever categories change
   useEffect(() => {
     handleTotalIncomeAllocatedProcess();
     handleTotalIncomeBudgetedProcess();
@@ -135,41 +132,83 @@ export const BudgetPage = () => {
     setNewCategoryName("");
   }
 
+  const getExpenseTotal = (category: Category) => {
+    const categoryIndex = categories.findIndex((x) => x.name === category.name);
+    if (categoryIndex === -1) return "0.00";
+    let total = 0;
+    for (let x of categories[categoryIndex].associatedBudgetItems) {
+      for (let z of x.expenses) {
+        total += z.amount;
+      }
+    }
+    return total.toFixed(2);
+  };
+
+  const getCategoryValue = (category: Category) => {
+    let categoryValue = 0;
+    for (let x of category.associatedBudgetItems) {
+      categoryValue += x.amountBudgeted;
+    }
+    return categoryValue;
+  };
+
   return (
-    <main style={{ flex: 1, padding: "1rem", background: "#efefec" }}>
-      {getIncomeItemIntoCorrectPosition(categories)?.map((category, index) => (
-        <div key={index}>
-          <CategorySection
-            index={index}
-            category={category}
-            addListItem={addListItem}
-            name={category.name}
-            associatedBudgetItems={category.associatedBudgetItems}
-            totalIncomeAllocated={totalIncomeAllocated}
-            handleTotalIncomeAllocatedProcess={
-              handleTotalIncomeAllocatedProcess
-            }
-            incomeValue={incomeValue}
-            handleTotalIncomeBudgetedProcess={handleTotalIncomeBudgetedProcess}
-          />
-        </div>
-      ))}
+    <main className="container-fluid py-3">
+      <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-3">
+        {getIncomeItemIntoCorrectPosition(categories)?.map((category, index) => (
+          <div key={index} className="col">
+            <div className="card h-100">
+              <div className="card-header" style={{ backgroundColor: '#373332', color: 'white' }}>
+                <div className="d-flex flex-column">
+                  <div className="d-flex justify-content-between align-items-center mb-2">
+                    <h5 className="card-title mb-0 text-truncate" style={{ maxWidth: '60%' }}>{category.name}</h5>
+                    <div className="d-flex gap-2 flex-wrap justify-content-end">
+                      {category.name !== "Income" && (
+                        <span className="badge bg-light text-dark">
+                          {getCategoryValue(category)} / {incomeValue}
+                        </span>
+                      )}
+                      <span className="badge bg-warning text-dark">
+                        Spent: {getExpenseTotal(category)}
+                      </span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <div className="card-body" style={{ backgroundColor: '#f5f5f0' }}>
+                <CategorySection
+                  index={index}
+                  category={category}
+                  addListItem={addListItem}
+                  name={category.name}
+                  associatedBudgetItems={category.associatedBudgetItems}
+                  totalIncomeAllocated={totalIncomeAllocated}
+                  handleTotalIncomeAllocatedProcess={handleTotalIncomeAllocatedProcess}
+                  incomeValue={incomeValue}
+                  handleTotalIncomeBudgetedProcess={handleTotalIncomeBudgetedProcess}
+                />
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
 
-      <button
-        type="button"
-        className="btn btn-success"
-        onClick={() => {
-          setAddCategoryClicked(true);
-        }}
-        data-toggle="modal"
-        data-target=".myModal"
-        style={{ marginTop: "10px", flex: 1, marginLeft: "10px" }}
-      >
-        Create a category
-      </button>
+      <div className="mt-3">
+        <button
+          type="button"
+          className="btn btn-success"
+          onClick={() => {
+            setAddCategoryClicked(true);
+          }}
+          data-toggle="modal"
+          data-target=".myModal"
+        >
+          Create a category
+        </button>
+      </div>
 
-      {addCategoryClicked ? (
-        <div className="myModal" tabIndex={-1}>
+      {addCategoryClicked && (
+        <div className="modal fade show" style={{ display: 'block' }} tabIndex={-1}>
           <div className="modal-dialog">
             <div className="modal-content">
               <div className="modal-header">
@@ -177,24 +216,26 @@ export const BudgetPage = () => {
                 <button
                   type="button"
                   className="btn-close"
-                  data-bs-dismiss="modal"
+                  onClick={() => setAddCategoryClicked(false)}
                   aria-label="Close"
                 ></button>
               </div>
               <div className="modal-body">
-                <label>Category Name: </label>
-                <input
-                  onChange={(e) => {
-                    setNewCategoryName(e.target.value);
-                  }}
-                  value={newCategoryName}
-                ></input>
+                <div className="mb-3">
+                  <label className="form-label">Category Name:</label>
+                  <input
+                    type="text"
+                    className="form-control"
+                    onChange={(e) => setNewCategoryName(e.target.value)}
+                    value={newCategoryName}
+                  />
+                </div>
               </div>
               <div className="modal-footer">
                 <button
                   type="button"
                   className="btn btn-secondary"
-                  data-bs-dismiss="modal"
+                  onClick={() => setAddCategoryClicked(false)}
                 >
                   Close
                 </button>
@@ -212,7 +253,7 @@ export const BudgetPage = () => {
             </div>
           </div>
         </div>
-      ) : null}
+      )}
     </main>
   );
 };

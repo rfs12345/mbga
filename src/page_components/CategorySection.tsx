@@ -1,6 +1,5 @@
 import { useEffect, useState } from "react";
 import { useAppStore } from "../App";
-import SectionHeader from "../page_organization/SectionHeaders";
 import List from "./List";
 import { Category } from "../entities/Category";
 import { getIncomeItemIntoCorrectPosition } from "../service/parseJson";
@@ -8,6 +7,7 @@ import { getIncomeItemIntoCorrectPosition } from "../service/parseJson";
 const CategorySection = (props: any) => {
   const categories = useAppStore((state) => state.categories);
   const setCategories = useAppStore((state) => state.setCategories);
+
   const handleCategoryTotalBudgeted = () => {
     let categoryValue = 0;
     const budgetItems = categories.find((x) => {
@@ -24,7 +24,6 @@ const CategorySection = (props: any) => {
 
   const handleCategoryTotalBudgetedProcess = () => {
     setCategoryValue(handleCategoryTotalBudgeted());
-    console.log(categoryValue);
   };
 
   const [categoryValue, setCategoryValue] = useState<number>(
@@ -41,37 +40,30 @@ const CategorySection = (props: any) => {
     }
   };
 
-  const getExpenseTotal = (category: Category) => {
-    const categoryIndex = categories.findIndex((x) => x.name === category.name);
-
-    if (categoryIndex === -1) return;
-    let total = 0;
-    for (let x of categories[categoryIndex].associatedBudgetItems) {
-      for (let z of x.expenses) {
-        total += z.amount;
-      }
-    }
-    return total.toFixed(2);
-  };
   useEffect(() => {
     handleCategoryTotalBudgetedProcess();
   }, [categories]);
 
   return (
-    <>
-      <SectionHeader
-        name={props.name}
-        category={props.category}
-        index={props.index}
-        addListItem={props.addListItem}
-        handleDeleteCategory={handleDeleteCategory}
-        totalIncomeAllocated={props.totalIncomeAllocated}
-        categoryValue={categoryValue}
-        incomeValue={props.incomeValue}
-        getExpenseTotal={getExpenseTotal}
-      />
-
-      <div>
+    <div className="d-flex flex-column h-100">
+      <div className="mb-2">
+        <button
+          type="button"
+          className="btn btn-success btn-sm"
+          onClick={() => props.addListItem(props.name)}
+        >
+          Add Item
+        </button>
+        <button
+          onClick={() => {
+            props.handleDeleteCategory(props.category, props.index);
+          }}
+          className="btn btn-danger btn-sm ms-2"
+        >
+          Delete Category
+        </button>
+      </div>
+      <div className="flex-grow-1">
         <List
           name={props.name}
           associatedBudgetItems={props.associatedBudgetItems}
@@ -81,7 +73,7 @@ const CategorySection = (props: any) => {
           handleTotalIncomeAllocated={props.handleTotalIncomeAllocatedProcess}
         />
       </div>
-    </>
+    </div>
   );
 };
 

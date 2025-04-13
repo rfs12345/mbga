@@ -62,56 +62,44 @@ const ListItem = (props: any) => {
   };
 
   return (
-    <li
-      className="list-group-item"
-      key={props.index}
-      style={{
-        display: "flex",
-        alignItems: "center",
-        justifyContent: "space-between",
-        gap: "10px", // Space between elements
-      }}
-    >
-      <a id="budgeted_item_name" style={{ flex: 1 }}>
-        <input
-          value={namee}
-          onChange={(e) => {
-            handleChangeInItemName(props.index, e.target.value);
-          }}
-          style={{ width: "100%" }} // Input takes up available space
-        />
-      </a>
-      <a id="budgeted_item_amount" style={{ flex: 1 }}>
-        <input
-          type="number"
-          min={"0"}
-          value={amountBudgetedd}
-          onChange={(e) => {
-            handleChangeInItemAmount(props.index, Number(e.target.value));
-          }}
-          style={{ width: "100%" }} // Input takes up available space
-        />
-      </a>
-      <button
-        onClick={() => {
-          handleDeleteItem(props.index);
-        }}
-        className="btn"
-        style={{
-          marginLeft: "10px", // Space between inputs and button
-          background: "#df5d09",
-          color: "white",
-        }}
-      >
-        Delete Item
-      </button>
-
-      <span
-        className="badge badge-pill badge-warning"
-        style={{ color: "black", background: "grey", marginLeft: "50px" }}
-      >
-        {findTotalAmountOfExpenses(props.index)}
-      </span>
+    <li className="list-group-item p-2">
+      <div className="d-flex flex-column w-100">
+        <div className="d-flex w-100 gap-2 mb-2">
+          <input
+            className="form-control"
+            value={namee}
+            onChange={(e) => {
+              handleChangeInItemName(props.index, e.target.value);
+            }}
+            placeholder="Item name"
+            style={{ fontSize: '0.9rem', width: '50%' }}
+          />
+          <input
+            type="number"
+            min="0"
+            className="form-control"
+            value={amountBudgetedd}
+            onChange={(e) => {
+              handleChangeInItemAmount(props.index, Number(e.target.value));
+            }}
+            placeholder="Amount"
+            style={{ fontSize: '0.9rem', width: '50%' }}
+          />
+        </div>
+        <div className="d-flex justify-content-between align-items-center">
+          <span className="badge bg-secondary">
+            Spent: {findTotalAmountOfExpenses(props.index)}
+          </span>
+          <button
+            onClick={() => {
+              handleDeleteItem(props.index);
+            }}
+            className="btn btn-danger btn-sm"
+          >
+            Delete
+          </button>
+        </div>
+      </div>
     </li>
   );
 };
