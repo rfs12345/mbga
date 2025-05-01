@@ -3,6 +3,7 @@ import { Category } from "../entities/Category";
 import { useAppStore } from "../App";
 import { useNavigate } from "react-router";
 import React from "react";
+import { Account } from "@/entities/Account";
 
 const HomePage = () => {
   const navigate = useNavigate();
@@ -13,6 +14,7 @@ const HomePage = () => {
   const setActualSelectedFile = useAppStore(
     (state) => state.setActualSelectedFile
   );
+  const setAccounts = useAppStore((state) => state.setAccounts);
 
   const actualSelectedFile = useAppStore((state) => state.actualSelectedFile);
   const selectedFile = useAppStore((state) => state.selectedFile);
@@ -23,6 +25,7 @@ const HomePage = () => {
   const setFiles = useAppStore((state) => state.setFiles);
   const years = useAppStore((state) => state.years);
   const files = useAppStore((state) => state.files);
+  const accounts = useAppStore((state) => state.accounts);
 
   const handleYearChange = (year: string) => {
     setYears([...years, year]);
@@ -55,6 +58,11 @@ const HomePage = () => {
   const handleSetMonths = (months: string[]) => {
     setMonths(months);
   };
+
+  const handleAccountsChange = (accounts: Account[]) => {
+    setAccounts(accounts);
+  };
+
   const handleFileChange = async (event: any) => {
     const selectedFile = await parseFileForSelected(
       event,
@@ -65,7 +73,8 @@ const HomePage = () => {
       handleFilesChange,
       handleYearChange,
       handleActualSelectedFileChange,
-      handleSetMonths
+      handleSetMonths,
+      handleAccountsChange
     ).then(() => {
       setTimeout(() => {
         handleFileUploaded();

@@ -62,6 +62,7 @@ const CategorySection = (props: any) => {
         >
           Delete Category
         </button>
+        {props.name === "Income" ? <button onClick={()=>{props.setAddIncomeToAccountClicked(true)}}>Add Income To Account? </button> :null}
       </div>
       <div className="flex-grow-1">
         <List

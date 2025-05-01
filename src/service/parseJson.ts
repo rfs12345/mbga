@@ -56,6 +56,16 @@ export const parseJsonForYear = (file: string | ArrayBuffer) => {
   return json.year;
 };
 
+export const parseJsonForAccounts = (file: string | ArrayBuffer) => {
+  const json = JSON.parse(file.toString());
+  if (json.accounts !== undefined) {
+    console.log("Accounts: ", json.accounts);
+    return json.accounts;
+  } else {
+    return [];
+  }
+};
+
 export const parseJsonForMonth = (file: string | ArrayBuffer) => {
   const json = JSON.parse(file.toString());
   const months = [

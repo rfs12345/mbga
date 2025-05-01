@@ -1,4 +1,5 @@
 import {
+  parseJsonForAccounts,
   parseJsonForCategories,
   parseJsonForMonth,
   parseJsonForSelectedYear,
@@ -28,7 +29,8 @@ export async function parseFileForSelected(
   handleFilesChange: any,
   handleYearsChange: any,
   handleActualFileChange: any,
-  handleSetMonths: any
+  handleSetMonths: any,
+  handleAccountsChange: any
 ) {
   new Promise<boolean>((resolve, reject) => {
     for (const file of event.target.files) {
@@ -47,6 +49,7 @@ export async function parseFileForSelected(
             console.log(selectedYear);
             handleYearsChange(year);
             if (selectedYear) {
+              handleAccountsChange(parseJsonForAccounts(readerEvent.target.result.toString()));
               handleSelectedYearChange(selectedYear);
               handleSelectedFileChange(readerEvent.target.result.toString());
               handleSetMonths(readerEvent.target.result.toString());

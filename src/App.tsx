@@ -7,6 +7,7 @@ import Layout from "./pages/Layout";
 import { BudgetPage } from "./pages/BudgetPage";
 import SpentPage from "./pages/SpentPage";
 import TrendsPage from "./pages/TrendsPage";
+import { Account } from "./entities/Account";
 
 interface AppState {
   categories: Category[];
@@ -32,6 +33,9 @@ interface AppState {
 
   actualSelectedFile: File | undefined;
   setActualSelectedFile: (file: File) => void;
+
+  accounts: Account[];
+  setAccounts: (accounts: Account[]) => void;
 
   incomeValue: number;
   setIncomeValue: (income: number) => void;
@@ -68,6 +72,9 @@ export const useAppStore = create<AppState>((set) => ({
 
   actualSelectedFile: undefined,
   setActualSelectedFile: (file: File) => set({ actualSelectedFile: file }),
+
+  accounts: [],
+  setAccounts: (accounts: Account[]) => set({ accounts }),
 
   incomeValue: 0,
   setIncomeValue: (income: number) => set({ incomeValue: income }),
